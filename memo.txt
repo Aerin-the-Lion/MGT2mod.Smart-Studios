@@ -1,1 +1,20 @@
 Unterstuetzen = メニュー画面の「support」の意味
+
+typ = 1 ; Game Development
+typ = 3 ; QA
+typ = 4 ; Graphics
+typ = 5 ; Music
+typ = 10 ; Motion Capture
+
+Support待機　→　からの、GameDevelopmentが開始された際に、自動的に開発サポート開始にさせるには…
+
+
+■Supportの挙動についてのメモ
+src（サポート元）のRoomには、taskのSupportがあるものの、そのtaskのSupportは、
+dest(サポート先)のRoomID、Room情報を所有しており、これによって、仕事を請け負うようにしているようだ。
+
+■すでに追加した機能についてのメモ
+gameScript.gameplayStudio bool[6]0...5
+gameScript.grafikStudio
+gameScript.soundStudio
+gameScript.motionCaptureStudio

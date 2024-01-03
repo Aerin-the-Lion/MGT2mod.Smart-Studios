@@ -1,0 +1,6 @@
+C:\Program Files (x86)\Steam\steamapps\common\Mad Games Tycoon 2\BepInEx\plugins\Smart Studios.dll
+C:\Program Files (x86)\Steam\steamapps\common\Mad Games Tycoon 2\BepInEx\plugins\Smart Studios.pdb
+C:\Users\admin\Documents\C#_Tool\MGT2mod.SmartStudios\Smart Studios\obj\Debug\Smart Studios.csproj.AssemblyReference.cache
+C:\Users\admin\Documents\C#_Tool\MGT2mod.SmartStudios\Smart Studios\obj\Debug\Smart Studios.csproj.CoreCompileInputs.cache
+C:\Users\admin\Documents\C#_Tool\MGT2mod.SmartStudios\Smart Studios\obj\Debug\Smart Studios.dll
+C:\Users\admin\Documents\C#_Tool\MGT2mod.SmartStudios\Smart Studios\obj\Debug\Smart Studios.pdb
