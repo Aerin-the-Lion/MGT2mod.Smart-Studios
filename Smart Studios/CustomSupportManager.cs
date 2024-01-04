@@ -172,14 +172,15 @@ namespace Smart_Studios
         static void FindMyRoom_Postfix(taskUnterstuetzen __instance, ref roomScript ___rS_)
         {
             roomScript srcRoomScript = FindRoomScriptForInstance(__instance.name);
-            CustomSupportStatus.IsSuitableCustomSupportForGameDev(srcRoomScript, ___rS_);
+            if (srcRoomScript == null) { return; }
+            bool hoge = CustomSupportStatus.IsSuitableCustomSupportForGameDev(srcRoomScript, ___rS_);
+            if (CustomSupportStatus.IsSuitableCustomSupportForGameDev(srcRoomScript, ___rS_))
             {
                 GameObject taskGameObject = ___rS_.taskGameObject;
                 if (taskGameObject == null)
                 {
                     return;
                 }
-
                 taskGame destTaskGame = taskGameObject.GetComponent<taskGame>();
                 gameScript destGameScript = destTaskGame.gS_;
 

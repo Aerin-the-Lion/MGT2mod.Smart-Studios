@@ -18,3 +18,10 @@ gameScript.gameplayStudio bool[6]0...5
 gameScript.grafikStudio
 gameScript.soundStudio
 gameScript.motionCaptureStudio
+
+v0.002
+既存のバグ
+
+（多分解決した？）・Game Development中、Null Reference Errorだらけになる、このStudio単体でもなる
+（多分解決した？・GameDevelopmentでGameDevelopmentにサポートするとバグってサポート画面が消える
+・QAのGameDevelopmentサポート中にキャンセルしようとするとキャンセルできない
