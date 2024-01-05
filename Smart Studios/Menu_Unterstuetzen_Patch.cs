@@ -10,19 +10,11 @@ using UnityEngine.UI;
 
 namespace Smart_Studios
 {
-    public class SmartStudiosManager: MonoBehaviour
+    public class Menu_Unterstuetzen_Patch: MonoBehaviour
     {
 
         //４種のStudioを判定処理
         //Game Development Studioに、4種のStudioをSupportとして割当させる処理を追加
-
-        /*
-            typ = 1 ; Game Development
-            typ = 3 ; QA
-            typ = 4 ; Graphics
-            typ = 5 ; Music
-            typ = 10 ; Motion Capture
-        */
 
         /// <summary>
         /// Support選択時、マウスカーソルの移動処理かつ部屋の許容判定処理
@@ -33,11 +25,9 @@ namespace Smart_Studios
         /// <returns></returns>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Menu_Unterstuetzen), "MouseMovement")]
-        static bool MouseMovement_Prefix(Menu_Unterstuetzen __instance, roomScript ___rS_, mainScript ___mS_, pickObjectScript ___pOS_, Camera ___myCamera, mapScript ___mapS_, roomScript ___roomOutlineOld, sfxScript ___sfx_)
+        static bool MouseMovement_Prefix(Menu_Unterstuetzen __instance, mainScript ___mS_, pickObjectScript ___pOS_, Camera ___myCamera, mapScript ___mapS_, roomScript ___roomOutlineOld, sfxScript ___sfx_)
         {
-
             Menu_Unterstuetzen instance = __instance;
-            roomScript roomScriptOld = ___roomOutlineOld;
             mainScript mainScript = ___mS_;
             pickObjectScript pickObjectScript = ___pOS_;
             Camera camera = ___myCamera;
@@ -49,13 +39,13 @@ namespace Smart_Studios
             {
                 return false;
             }
-
             bool mouseButtonUp = Input.GetMouseButtonUp(0);
             pickObjectScript.disableMouseButton = mouseButtonUp;
             RaycastHit hit;
 
             if (Physics.Raycast(camera.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f)), out hit, 200f, instance.layerMaskFloor))
             {
+                Debug.Log(hit.point);
                 int numX = Mathf.RoundToInt(hit.point.x);
                 int numZ = Mathf.RoundToInt(hit.point.z);
 
@@ -71,7 +61,6 @@ namespace Smart_Studios
                 {
                     roomOutlineOld.DisableOutlineLayer();
                     roomOutlineOld = null;
-                    return false;
                 }
             }
             else if (roomOutlineOld)
@@ -80,11 +69,16 @@ namespace Smart_Studios
                 roomOutlineOld = null;
             }
 
+            //フィールドの値を更新
+            __instance = instance;
+            Traverse.Create(__instance).Field("roomOutlineOld").SetValue(roomOutlineOld);
+
             return false;
         }
 
         private static void HandleRoomOutlineChange(ref roomScript roomOutlineOld, roomScript currentRoomScript, Menu_Unterstuetzen instance, int numX, int numZ, bool mouseButtonUp, sfxScript sfxScript)
         {
+            Debug.Log($"currentRoomScript: {currentRoomScript}");
             if (roomOutlineOld != currentRoomScript)
             {
                 roomOutlineOld?.DisableOutlineLayer();
@@ -103,14 +97,25 @@ namespace Smart_Studios
                     return;
                 }
                 sfxScript.PlaySound(2, true);
+                return;
             }
         }
 
+
         private static bool ShouldSetOutline(int roomType, int currentRoomType, int currentRoomId, int roomId)
         {
-            int[] validTypes = { 3, 4, 5, 10 };
-            return (roomType == currentRoomType && currentRoomId != roomId) ||
-                   (Array.IndexOf(validTypes, roomType) >= 0 && currentRoomType == 1 && currentRoomId != roomId);
+            /*
+            typ = 1 ; Game Development
+            typ = 3 ; QA
+            typ = 4 ; Graphics
+            typ = 5 ; Music
+            typ = 10 ; Motion Capture
+            */
+            int[] validTypesCustomSupport = { 3, 4, 5, 10 };
+
+            bool originalLogic = (roomType == currentRoomType && currentRoomId != roomId);
+            bool customSupportLogic = (Array.IndexOf(validTypesCustomSupport, roomType) >= 0 && currentRoomType == 1 && currentRoomId != roomId);
+            return originalLogic || customSupportLogic;
         }
 
         private static void AcceptRoomChange(Menu_Unterstuetzen instance, roomScript currentRoomScript)
@@ -147,6 +152,11 @@ namespace Smart_Studios
             }
 
             instance.BUTTON_Close();
+
+            //フィールドの値を更新
+            Traverse.Create(__instance).Field("rS_").SetValue(sourceRoomScript);
+            Traverse.Create(__instance).Field("guiMain_").SetValue(guiMain);
+
             return false;
         }
 

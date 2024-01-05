@@ -77,10 +77,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="taskUnterstuetzen_Patch.cs" />
     <Compile Include="QA_ScriptManager.cs" />
     <Compile Include="CustomSupportStatus.cs" />
     <Compile Include="CustomSupportManager.cs" />
-    <Compile Include="SmartStudiosManager.cs" />
+    <Compile Include="Menu_Unterstuetzen_Patch.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
