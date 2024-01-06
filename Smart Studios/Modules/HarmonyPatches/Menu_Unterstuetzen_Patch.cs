@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using UnityEngine;
 using HarmonyLib;
 using UnityEngine.UI;
+using Smart_Studios.Modules.CustomSupport;
 
 
-namespace Smart_Studios
+namespace Smart_Studios.Modules.HarmonyPatch
 {
     public class Menu_Unterstuetzen_Patch: MonoBehaviour
     {
@@ -24,7 +25,7 @@ namespace Smart_Studios
         /// <param name="___rS_"></param>
         /// <returns></returns>
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(Menu_Unterstuetzen), "MouseMovement")]
+        [HarmonyLib.HarmonyPatch(typeof(Menu_Unterstuetzen), "MouseMovement")]
         static bool MouseMovement_Prefix(Menu_Unterstuetzen __instance, mainScript ___mS_, pickObjectScript ___pOS_, Camera ___myCamera, mapScript ___mapS_, roomScript ___roomOutlineOld, sfxScript ___sfx_)
         {
             Menu_Unterstuetzen instance = __instance;
@@ -45,7 +46,6 @@ namespace Smart_Studios
 
             if (Physics.Raycast(camera.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f)), out hit, 200f, instance.layerMaskFloor))
             {
-                Debug.Log(hit.point);
                 int numX = Mathf.RoundToInt(hit.point.x);
                 int numZ = Mathf.RoundToInt(hit.point.z);
 
@@ -78,12 +78,11 @@ namespace Smart_Studios
 
         private static void HandleRoomOutlineChange(ref roomScript roomOutlineOld, roomScript currentRoomScript, Menu_Unterstuetzen instance, int numX, int numZ, bool mouseButtonUp, sfxScript sfxScript)
         {
-            Debug.Log($"currentRoomScript: {currentRoomScript}");
             if (roomOutlineOld != currentRoomScript)
             {
                 roomOutlineOld?.DisableOutlineLayer();
                 roomOutlineOld = currentRoomScript;
-                if (ShouldSetOutline(instance.rS_.typ, currentRoomScript.typ, currentRoomScript.myID, instance.rS_.myID))
+                if (ShouldSetOutline(instance.rS_, currentRoomScript, currentRoomScript.myID, instance.rS_.myID))
                 {
                     currentRoomScript.SetOutlineLayer();
                 }
@@ -91,7 +90,7 @@ namespace Smart_Studios
 
             if (mouseButtonUp)
             {
-                if (ShouldSetOutline(instance.rS_.typ, currentRoomScript.typ, currentRoomScript.myID, instance.rS_.myID))
+                if (ShouldSetOutline(instance.rS_, currentRoomScript, currentRoomScript.myID, instance.rS_.myID))
                 {
                     AcceptRoomChange(instance, currentRoomScript);
                     return;
@@ -102,7 +101,7 @@ namespace Smart_Studios
         }
 
 
-        private static bool ShouldSetOutline(int roomType, int currentRoomType, int currentRoomId, int roomId)
+        private static bool ShouldSetOutline(roomScript room, roomScript currentRoom, int currentRoomId, int roomId)
         {
             /*
             typ = 1 ; Game Development
@@ -111,10 +110,8 @@ namespace Smart_Studios
             typ = 5 ; Music
             typ = 10 ; Motion Capture
             */
-            int[] validTypesCustomSupport = { 3, 4, 5, 10 };
-
-            bool originalLogic = (roomType == currentRoomType && currentRoomId != roomId);
-            bool customSupportLogic = (Array.IndexOf(validTypesCustomSupport, roomType) >= 0 && currentRoomType == 1 && currentRoomId != roomId);
+            bool originalLogic = (room.typ == currentRoom.typ && currentRoomId != roomId);
+            bool customSupportLogic = CustomSupportUtilities.IsSuitableCustomSupportForGameDev(room, currentRoom);
             return originalLogic || customSupportLogic;
         }
 
@@ -125,7 +122,7 @@ namespace Smart_Studios
 
 
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(Menu_Unterstuetzen), "Accept")]
+        [HarmonyLib.HarmonyPatch(typeof(Menu_Unterstuetzen), "Accept")]
         static bool Prefix(Menu_Unterstuetzen __instance, ref roomScript script_, ref roomScript ___rS_, ref mainScript ___mS_, ref GUI_Main ___guiMain_)
         {
             Menu_Unterstuetzen instance = __instance;
@@ -146,7 +143,7 @@ namespace Smart_Studios
                 InitializeTask(newTask, targetRoomScript, sourceRoomScript);
             }
 
-            if (CustomSupportStatus.IsSuitableCustomSupportForGameDev(sourceRoomScript, targetRoomScript))
+            if (CustomSupportUtilities.IsSuitableCustomSupportForGameDev(sourceRoomScript, targetRoomScript))
             {
                 AttachCustomSupportManagerToGameObject(sourceRoomScript, targetRoomScript, mainScript, guiMain);
             }

@@ -1,31 +1,35 @@
 ﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
+using Smart_Studios.Modules.CustomSupport;
+using Smart_Studios.Modules.Studios;
 
-namespace Smart_Studios
+namespace Smart_Studios.Modules.HarmonyPatch
 {
     internal class taskUnterstuetzen_Patch
     {
+        /// <summary>
+        /// taskUnterstuetzenのUpdate関数のPostfix
+        /// 英語だと、taskSupport、要はSupport時の１フレーム毎の処理を行う関数のパッチ。
+        /// Postfixなので、元の関数の処理が終わった後に実行されるため、他modの影響を受けにくい。
+        /// 特定のタイプ（3, 4, 5, 10）の部屋から、Game Development StudioにSupportを割り当てている場合にのみ、AutoStart処理が適用される。
+        /// </summary>
+        /// <param name="__instance"></param>
+        /// <param name="___rS_"></param>
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(taskUnterstuetzen), "Update")]
+        [HarmonyLib.HarmonyPatch(typeof(taskUnterstuetzen), "Update")]
         static void FindMyRoom_Postfix(taskUnterstuetzen __instance, ref roomScript ___rS_)
         {
             roomScript srcRoomScript = CustomSupportManager.FindRoomScriptForInstance(__instance.name);
             if (srcRoomScript == null) { return; }
-            bool hoge = CustomSupportStatus.IsSuitableCustomSupportForGameDev(srcRoomScript, ___rS_);
-            if (CustomSupportStatus.IsSuitableCustomSupportForGameDev(srcRoomScript, ___rS_))
+            if (CustomSupportUtilities.IsSuitableCustomSupportForGameDev(srcRoomScript, ___rS_))
             {
+                //taskGameObjectがnullの場合は、引き続きSupport待機処理を行う。　taskGameObject …　Game Developmentでゲーム開発時のゲームのGameObject
                 GameObject taskGameObject = ___rS_.taskGameObject;
-                if (taskGameObject == null)
-                {
-                    return;
-                }
+                if (taskGameObject == null) { return; }
+
                 taskGame destTaskGame = taskGameObject.GetComponent<taskGame>();
                 gameScript destGameScript = destTaskGame.gS_;
+                if (destGameScript == null) { return; }
 
                 //___rS_の元のGameObjectにSmartStudiosCustomSupportManagerをアタッチさせる。
                 if (srcRoomScript.gameObject.GetComponent<CustomSupportManager>() == null)

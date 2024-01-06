@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using UnityEngine;
 using HarmonyLib;
+using Smart_Studios.Modules.HarmonyPatch;
 
 namespace Smart_Studios
 {
@@ -11,7 +12,7 @@ namespace Smart_Studios
     {
         public const string PluginGuid = "me.Aerin_the_Lion.Mad_Games_Tycoon_2.plugins.SmartStudios";
         public const string PluginName = "Smart Studios";
-        public const string PluginVersion = "0.0.0.3";
+        public const string PluginVersion = "0.0.0.4";
 
         public static ConfigEntry<bool> CFG_IS_ENABLED { get; private set; }
         public static ConfigEntry<float> SkillPointDecreaseMultiplierOnChange { get; private set; }

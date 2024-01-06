@@ -8,7 +8,7 @@ using HarmonyLib;
 using BepInEx;
 using System.Security.Cryptography;
 
-namespace Smart_Studios
+namespace Smart_Studios.Modules.CustomSupport
 {
     /// <summary>
     /// StartStudios専用のSupport待機処理のためのクラス
@@ -155,7 +155,7 @@ namespace Smart_Studios
         /// <returns></returns>
         public static roomScript FindRoomScriptForInstance(string name)
         {
-            var roomScripts = GameObject.FindGameObjectsWithTag("Room");
+             var roomScripts = GameObject.FindGameObjectsWithTag("Room");
             foreach (var room in roomScripts)
             {
                 var roomComponent = room.GetComponent<roomScript>();

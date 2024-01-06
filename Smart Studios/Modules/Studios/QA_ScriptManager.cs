@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Smart_Studios
+namespace Smart_Studios.Modules.Studios
 {
     public class QA_ScriptManager : MonoBehaviour
     {
@@ -23,7 +23,6 @@ namespace Smart_Studios
         private sfxScript sfx_;
         private gameScript selectedGame;
         public roomScript rS_;
-        private bool[] buttonAdds;
         private bool[] deactiveGameplay;
 
         void Start()
@@ -74,12 +73,11 @@ namespace Smart_Studios
 
         public void AutoStart(roomScript roomScript, gameScript destGameScript)
 		{
+
             //初期化
             Init(roomScript, destGameScript);
-
             deactiveGameplay = GetDeactiveGameFeatures(destGameScript.gameplayStudio);
             Traverse.Create(Menu_QA).Field("buttonAdds").SetValue(deactiveGameplay);
-
             int num = Mathf.RoundToInt((float)GetDevCosts());
             if (!this.selectedGame)
 			{
@@ -95,12 +93,12 @@ namespace Smart_Studios
 				this.guiMain_.ShowNoMoney();
 				return;
 			}
-			this.sfx_.PlaySound(3, true);
-			this.mS_.Pay((long)num, 10);
+            this.sfx_.PlaySound(3, true);
+            this.mS_.Pay((long)num, 10);
 			taskGameplayVerbessern taskGameplayVerbessern = this.guiMain_.AddTask_GameplayVerbessern();
-			taskGameplayVerbessern.Init(false);
-			taskGameplayVerbessern.targetID = this.selectedGame.myID;
-			for (int i = 0; i < deactiveGameplay.Length; i++)
+            taskGameplayVerbessern.Init(false);
+            taskGameplayVerbessern.targetID = this.selectedGame.myID;
+            for (int i = 0; i < deactiveGameplay.Length; i++)
 			{
 				if (deactiveGameplay[i])
 
@@ -116,16 +114,17 @@ namespace Smart_Studios
 			}
             //本体の起動メソッド
             taskGameplayVerbessern.FindNewAdd();
-            
         }
 
         public bool[] GetDeactiveGameFeatures(bool[] gameFeatures)
         {
+            Debug.Log("gameFeatures.Length : " + gameFeatures.Length);
             bool[] deactiveFeatures = new bool[gameFeatures.Length];
             for (int i = 0; i < gameFeatures.Length; i++)
             {
                 deactiveFeatures[i] = !gameFeatures[i];
             }
+            Debug.Log("deactiveFeatures : " + deactiveFeatures[0] + deactiveFeatures[1] + deactiveFeatures[2]);
             return deactiveFeatures;
         }
 

@@ -77,13 +77,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="taskUnterstuetzen_Patch.cs" />
-    <Compile Include="QA_ScriptManager.cs" />
-    <Compile Include="CustomSupportStatus.cs" />
-    <Compile Include="CustomSupportManager.cs" />
-    <Compile Include="Menu_Unterstuetzen_Patch.cs" />
+    <Compile Include="Modules\CustomSupport\CustomSupportUtilities.cs" />
+    <Compile Include="Modules\HarmonyPatches\taskUnterstuetzen_Patch.cs" />
+    <Compile Include="Modules\Studios\QA_ScriptManager.cs" />
+    <Compile Include="Modules\CustomSupport\CustomSupportStatus.cs" />
+    <Compile Include="Modules\CustomSupport\CustomSupportManager.cs" />
+    <Compile Include="Modules\HarmonyPatches\Menu_Unterstuetzen_Patch.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Config\ConfigManager.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
