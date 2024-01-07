@@ -43,6 +43,7 @@
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mad Games Tycoon 2\BepInEx\core\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -79,6 +80,7 @@
   <ItemGroup>
     <Compile Include="Modules\CustomSupport\CustomSupportUtilities.cs" />
     <Compile Include="Modules\HarmonyPatches\buildRoomScript_Patch.cs" />
+    <Compile Include="Modules\HarmonyPatches\Menu_W_Aufgabe_Abbrechen_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\mapScript_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\taskUnterstuetzen_Patch.cs" />
     <Compile Include="Modules\Studios\QA_ScriptManager.cs" />

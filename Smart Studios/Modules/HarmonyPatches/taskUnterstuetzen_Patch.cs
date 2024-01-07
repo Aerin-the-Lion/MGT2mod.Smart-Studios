@@ -13,7 +13,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
     internal class taskUnterstuetzen_Patch
     {
         //セーフ処理のため、一度だけキャッシュするための変数
-        private static bool isCachedRoomScripts = false;
+        private static bool hasCachedRoomScripts = false;
 
 
         /*
@@ -58,6 +58,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
         /// 英語だと、taskSupport、要はSupport時の１フレーム毎の処理を行う関数のパッチ。
         /// Postfixなので、元の関数の処理が終わった後に実行されるため、他modの影響を受けにくい。
         /// 特定のタイプ（3, 4, 5, 10）の部屋から、Game Development StudioにSupportを割り当てている場合にのみ、AutoStart処理が適用される。
+        /// 一応パフォーマンスに配慮しているが、気にかける。
         /// </summary>
         /// <param name="__instance"></param>
         /// <param name="___rS_">Support先のroomScript、distRoomScript</param>
@@ -80,9 +81,9 @@ namespace Smart_Studios.Modules.HarmonyPatches
         /// </summary>
         private static void GetCacheRoomScriptsWhenStart()
         {
-            if (isCachedRoomScripts) { return; }
+            if (hasCachedRoomScripts) { return; }
             CustomSupportManager.CacheRoomScripts();
-            isCachedRoomScripts = true;
+            hasCachedRoomScripts = true;
         }
         private static bool IsValidForCustomSupport(taskUnterstuetzen instance, roomScript roomScript)
         {
@@ -101,6 +102,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
 
         private static void PerformCustomSupportActions(taskUnterstuetzen instance, roomScript roomScript)
         {
+            //taskGameObjectがnullの場合は、引き続きSupport待機処理を行う。　taskGameObject …　Game Developmentでゲーム開発時のゲームのGameObject
             GameObject taskGameObject = roomScript.taskGameObject;
             if (taskGameObject == null) return;
 
@@ -110,7 +112,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
 
             var srcRoomScript = CustomSupportManager.FindRoomScriptForInstance(instance.name);
             QA_ScriptManager qA_ScriptManager = new QA_ScriptManager();
-            qA_ScriptManager.AutoStart(srcRoomScript, destGameScript);
+            qA_ScriptManager.AutoStart(srcRoomScript, destGameScript); //これsrcRoomScript入れないといけない。Support元で行わないといけないので。
         }
     }
 }

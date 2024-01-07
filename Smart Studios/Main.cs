@@ -12,7 +12,7 @@ namespace Smart_Studios
     {
         public const string PluginGuid = "me.Aerin_the_Lion.Mad_Games_Tycoon_2.plugins.SmartStudios";
         public const string PluginName = "Smart Studios";
-        public const string PluginVersion = "0.0.0.6";
+        public const string PluginVersion = "0.0.0.7";
 
         public static ConfigEntry<bool> CFG_IS_ENABLED { get; private set; }
         public static ConfigEntry<float> SkillPointDecreaseMultiplierOnChange { get; private set; }
@@ -51,6 +51,7 @@ namespace Smart_Studios
             Harmony.CreateAndPatchAll(typeof(taskUnterstuetzen_Patch));
             Harmony.CreateAndPatchAll(typeof(buildRoomScript_Patch));
             Harmony.CreateAndPatchAll(typeof(mapScript_Patch));
+            Harmony.CreateAndPatchAll(typeof(Menu_W_Aufgabe_Abbrechen_Patch));
 
 
         }

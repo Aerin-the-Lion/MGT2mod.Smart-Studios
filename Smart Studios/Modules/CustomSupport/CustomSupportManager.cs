@@ -57,6 +57,10 @@ namespace Smart_Studios.Modules.CustomSupport
             return rS_.taskGameObject == null && rS_.taskID == -1;
         }
 
+
+        /// <summary>
+        /// 各種StudioのSupport先の開発が終了した後、taskGame、IDをCustomSupportに再設定させる処理。
+        /// </summary>
         void GetMyTaskUnterstuetzen()
         {
             taskUnterstuetzen myTaskUnterstuetzen = Traverse.Create(rS_).Field("myTaskUnterstuetzen").GetValue<taskUnterstuetzen>();

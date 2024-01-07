@@ -78,11 +78,8 @@ namespace Smart_Studios.Modules.Studios
 
             //初期化
             Init(roomScript, destGameScript);
-            Debug.Log("finishedOrWipStudioFeatures");
             finishedOrWipStudioFeatures = GetFinishedOrWipStudioFeatures();
-            Debug.Log("deactiveStudioFeatures");
             deactiveStudioFeatures = GetDeactiveStudioFeatures(finishedOrWipStudioFeatures);
-            Debug.Log("end");
 
             int num = Mathf.RoundToInt((float)GetDevCosts());
             if (!this.selectedGame)
@@ -147,9 +144,7 @@ namespace Smart_Studios.Modules.Studios
                     {
                         finishedOrWipFeatures[i] = false;
                     }
-                    Debug.Log("BeingProcessedInAnotherRoom Before");
                     bool BeingProcessedInAnotherRoom = Traverse.Create(Menu_QA).Method("WirdInAnderenRaumBearbeitet", new object[] { i }).GetValue<bool>();
-                    Debug.Log("BeingProcessedInAnotherRoom After");
                     Debug.Log(BeingProcessedInAnotherRoom);
                     if (BeingProcessedInAnotherRoom)
                     {
