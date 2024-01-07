@@ -5,7 +5,7 @@ using Smart_Studios.Modules.Studios;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Smart_Studios.Modules.HarmonyPatch
+namespace Smart_Studios.Modules.HarmonyPatches
 {
     /// <summary>
     /// taskSupport in English

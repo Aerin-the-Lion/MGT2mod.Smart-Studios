@@ -9,7 +9,7 @@ using UnityEngine.UI;
 using Smart_Studios.Modules.CustomSupport;
 
 
-namespace Smart_Studios.Modules.HarmonyPatch
+namespace Smart_Studios.Modules.HarmonyPatches
 {
     /// <summary>
     /// Menu_Support in English

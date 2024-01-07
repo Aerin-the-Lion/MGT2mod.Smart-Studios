@@ -2,7 +2,6 @@
 using BepInEx.Configuration;
 using UnityEngine;
 using HarmonyLib;
-using Smart_Studios.Modules.HarmonyPatch;
 using Smart_Studios.Modules.HarmonyPatches;
 
 namespace Smart_Studios
