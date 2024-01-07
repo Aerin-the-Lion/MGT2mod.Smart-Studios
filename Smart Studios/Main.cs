@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using UnityEngine;
 using HarmonyLib;
 using Smart_Studios.Modules.HarmonyPatch;
+using Smart_Studios.Modules.HarmonyPatches;
 
 namespace Smart_Studios
 {
@@ -12,7 +13,7 @@ namespace Smart_Studios
     {
         public const string PluginGuid = "me.Aerin_the_Lion.Mad_Games_Tycoon_2.plugins.SmartStudios";
         public const string PluginName = "Smart Studios";
-        public const string PluginVersion = "0.0.0.4";
+        public const string PluginVersion = "0.0.0.5";
 
         public static ConfigEntry<bool> CFG_IS_ENABLED { get; private set; }
         public static ConfigEntry<float> SkillPointDecreaseMultiplierOnChange { get; private set; }
@@ -49,6 +50,9 @@ namespace Smart_Studios
             if (!Main.CFG_IS_ENABLED.Value) { return; }
             Harmony.CreateAndPatchAll(typeof(Menu_Unterstuetzen_Patch));
             Harmony.CreateAndPatchAll(typeof(taskUnterstuetzen_Patch));
+            Harmony.CreateAndPatchAll(typeof(buildRoomScript_Patch));
+            Harmony.CreateAndPatchAll(typeof(mapScript_Patch));
+
 
         }
 

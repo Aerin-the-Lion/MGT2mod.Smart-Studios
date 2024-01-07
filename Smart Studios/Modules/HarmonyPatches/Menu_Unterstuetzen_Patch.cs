@@ -11,6 +11,9 @@ using Smart_Studios.Modules.CustomSupport;
 
 namespace Smart_Studios.Modules.HarmonyPatch
 {
+    /// <summary>
+    /// Menu_Support in English
+    /// </summary>
     public class Menu_Unterstuetzen_Patch: MonoBehaviour
     {
 

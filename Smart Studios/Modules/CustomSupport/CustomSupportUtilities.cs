@@ -23,6 +23,5 @@ namespace Smart_Studios.Modules.CustomSupport
             // サポート先がGame Development Studioで、サポート元が有効なタイプかどうかをチェック
             return srcRoomScript != null && destRoomScript.typ == 1 && (Array.IndexOf(validTypes, srcRoomScript.typ) >= 0);
         }
-
     }
 }

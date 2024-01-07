@@ -14,7 +14,7 @@ namespace Smart_Studios.Modules.CustomSupport
     /// StartStudios専用のSupport待機処理のためのクラス
     /// Room_*******のGameObjectにアタッチする。
     /// </summary>
-    public class CustomSupportManager: MonoBehaviour
+    public class CustomSupportManager : MonoBehaviour
     {
         public int myID = -1;
         public int roomID = -1;
@@ -32,14 +32,20 @@ namespace Smart_Studios.Modules.CustomSupport
         public roomScript rS_;
         public GameObject myTaskUnterstuetzenObject;
 
+        private static List<roomScript> cachedRoomScripts = new List<roomScript>();
+
+
         void Start()
         {
             //ここで、StartStudiosのSupport待機処理のためのクラスを初期化する。
             FindScripts();
+            //RoomScriptのキャッシュを更新する関数
+            CacheRoomScripts();
         }
 
         void Update()
         {
+            //各種StudioのSupport先の開発が終了した後、taskGame、IDをCustomSupportに再設定させる処理。
             if (ShouldRetrieveTaskUnterstuetzen())
             {
                 GetMyTaskUnterstuetzen();
@@ -138,7 +144,7 @@ namespace Smart_Studios.Modules.CustomSupport
             srcRoomScript.DisableOutlineLayer();
             destRoomScript.DisableOutlineLayer();
         }
-        
+
         //CustomSupportの設定・命名
         public void SetCustomSupport(GameObject gameObject)
         {
@@ -149,22 +155,30 @@ namespace Smart_Studios.Modules.CustomSupport
         }
 
         /// <summary>
-        /// __instance.nameと一致するtaskGameObjectを持つroomScriptを探す関数
+        /// RoomScriptのキャッシュを更新する関数
+        /// 適切なタイミングでの使用を推奨
         /// </summary>
-        /// <param name="instance"></param>
-        /// <returns></returns>
-        public static roomScript FindRoomScriptForInstance(string name)
+        public static void CacheRoomScripts()
         {
-             var roomScripts = GameObject.FindGameObjectsWithTag("Room");
-            foreach (var room in roomScripts)
+            cachedRoomScripts.Clear();
+            var roomObjects = GameObject.FindGameObjectsWithTag("Room");
+            foreach (var room in roomObjects)
             {
                 var roomComponent = room.GetComponent<roomScript>();
-                if (roomComponent != null && roomComponent.taskGameObject != null && roomComponent.taskGameObject.name == name)
+                if (roomComponent != null)
                 {
-                    return roomComponent;
+                    cachedRoomScripts.Add(roomComponent);
                 }
             }
-            return null; // 見つからなかった場合はnullを返す
+        }
+
+        /// <summary>
+        /// __instance.nameと一致するtaskGameObjectを持つroomScriptを探す関数
+        /// CachedRoomScriptsに対してのみ有効、適切なタイミングでCacheRoomScriptsの更新が必要。
+        /// </summary>
+        public static roomScript FindRoomScriptForInstance(string name)
+        {
+            return cachedRoomScripts.FirstOrDefault(r => r.taskGameObject?.name == name);
         }
     }
 }

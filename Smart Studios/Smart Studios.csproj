@@ -78,6 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Modules\CustomSupport\CustomSupportUtilities.cs" />
+    <Compile Include="Modules\HarmonyPatches\buildRoomScript_Patch.cs" />
+    <Compile Include="Modules\HarmonyPatches\mapScript_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\taskUnterstuetzen_Patch.cs" />
     <Compile Include="Modules\Studios\QA_ScriptManager.cs" />
     <Compile Include="Modules\CustomSupport\CustomSupportStatus.cs" />
