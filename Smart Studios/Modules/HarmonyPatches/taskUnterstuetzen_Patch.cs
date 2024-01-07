@@ -12,6 +12,10 @@ namespace Smart_Studios.Modules.HarmonyPatches
     /// </summary>
     internal class taskUnterstuetzen_Patch
     {
+        //セーフ処理のため、一度だけキャッシュするための変数
+        private static bool isCachedRoomScripts = false;
+
+
         /*
         /// <summary>
         /// taskUnterstuetzenのUpdate関数のPostfix
@@ -49,10 +53,19 @@ namespace Smart_Studios.Modules.HarmonyPatches
         }
         */
 
+        /// <summary>
+        /// taskUnterstuetzenのUpdate関数のPostfix
+        /// 英語だと、taskSupport、要はSupport時の１フレーム毎の処理を行う関数のパッチ。
+        /// Postfixなので、元の関数の処理が終わった後に実行されるため、他modの影響を受けにくい。
+        /// 特定のタイプ（3, 4, 5, 10）の部屋から、Game Development StudioにSupportを割り当てている場合にのみ、AutoStart処理が適用される。
+        /// </summary>
+        /// <param name="__instance"></param>
+        /// <param name="___rS_">Support先のroomScript、distRoomScript</param>
         [HarmonyPostfix]
         [HarmonyLib.HarmonyPatch(typeof(taskUnterstuetzen), "Update")]
         static void Update_Postfix(taskUnterstuetzen __instance, ref roomScript ___rS_)
         {
+            GetCacheRoomScriptsWhenStart();
             if (!IsValidForCustomSupport(__instance, ___rS_))
             {
                 return;
@@ -62,6 +75,15 @@ namespace Smart_Studios.Modules.HarmonyPatches
             PerformCustomSupportActions(__instance, ___rS_);
         }
 
+        /// <summary>
+        /// Start時、一度だけキャッシュする。
+        /// </summary>
+        private static void GetCacheRoomScriptsWhenStart()
+        {
+            if (isCachedRoomScripts) { return; }
+            CustomSupportManager.CacheRoomScripts();
+            isCachedRoomScripts = true;
+        }
         private static bool IsValidForCustomSupport(taskUnterstuetzen instance, roomScript roomScript)
         {
             roomScript srcRoomScript = CustomSupportManager.FindRoomScriptForInstance(instance.name);

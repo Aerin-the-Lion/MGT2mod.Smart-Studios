@@ -23,7 +23,9 @@ namespace Smart_Studios.Modules.Studios
         private sfxScript sfx_;
         private gameScript selectedGame;
         public roomScript rS_;
-        private bool[] deactiveGameplay;
+        private bool[] buttonAdds;
+        private bool[] deactiveStudioFeatures;
+        public bool[] finishedOrWipStudioFeatures;
 
         void Start()
         {
@@ -76,8 +78,12 @@ namespace Smart_Studios.Modules.Studios
 
             //初期化
             Init(roomScript, destGameScript);
-            deactiveGameplay = GetDeactiveGameFeatures(destGameScript.gameplayStudio);
-            Traverse.Create(Menu_QA).Field("buttonAdds").SetValue(deactiveGameplay);
+            Debug.Log("finishedOrWipStudioFeatures");
+            finishedOrWipStudioFeatures = GetFinishedOrWipStudioFeatures();
+            Debug.Log("deactiveStudioFeatures");
+            deactiveStudioFeatures = GetDeactiveStudioFeatures(finishedOrWipStudioFeatures);
+            Debug.Log("end");
+
             int num = Mathf.RoundToInt((float)GetDevCosts());
             if (!this.selectedGame)
 			{
@@ -98,9 +104,9 @@ namespace Smart_Studios.Modules.Studios
 			taskGameplayVerbessern taskGameplayVerbessern = this.guiMain_.AddTask_GameplayVerbessern();
             taskGameplayVerbessern.Init(false);
             taskGameplayVerbessern.targetID = this.selectedGame.myID;
-            for (int i = 0; i < deactiveGameplay.Length; i++)
+            for (int i = 0; i < deactiveStudioFeatures.Length; i++)
 			{
-				if (deactiveGameplay[i])
+				if (deactiveStudioFeatures[i])
 
 				{
 					taskGameplayVerbessern.adds[i] = true;
@@ -116,22 +122,48 @@ namespace Smart_Studios.Modules.Studios
             taskGameplayVerbessern.FindNewAdd();
         }
 
-        public bool[] GetDeactiveGameFeatures(bool[] gameFeatures)
+        public bool[] GetDeactiveStudioFeatures(bool[] studioFeatures)
         {
-            Debug.Log("gameFeatures.Length : " + gameFeatures.Length);
-            bool[] deactiveFeatures = new bool[gameFeatures.Length];
-            for (int i = 0; i < gameFeatures.Length; i++)
+            bool[] deactiveFeatures = new bool[studioFeatures.Length];
+            for (int i = 0; i < studioFeatures.Length; i++)
             {
-                deactiveFeatures[i] = !gameFeatures[i];
+                deactiveFeatures[i] = !studioFeatures[i];
             }
-            Debug.Log("deactiveFeatures : " + deactiveFeatures[0] + deactiveFeatures[1] + deactiveFeatures[2]);
             return deactiveFeatures;
         }
 
-        public int CountActiveGameFeatures(bool[] gameFeatures)
+        public bool[] GetFinishedOrWipStudioFeatures()
+        {
+            bool[] finishedOrWipFeatures = new bool[buttonAdds.Length];
+            for (int i = 0; i < buttonAdds.Length; i++)
+            {
+                if (this.selectedGame)
+                {
+                    if (this.selectedGame.gameplayStudio[i])
+                    {
+                        finishedOrWipFeatures[i] = true;
+                    }
+                    else
+                    {
+                        finishedOrWipFeatures[i] = false;
+                    }
+                    Debug.Log("BeingProcessedInAnotherRoom Before");
+                    bool BeingProcessedInAnotherRoom = Traverse.Create(Menu_QA).Method("WirdInAnderenRaumBearbeitet", new object[] { i }).GetValue<bool>();
+                    Debug.Log("BeingProcessedInAnotherRoom After");
+                    Debug.Log(BeingProcessedInAnotherRoom);
+                    if (BeingProcessedInAnotherRoom)
+                    {
+                        finishedOrWipFeatures[i] = true;
+                    }
+                }
+            }
+            return finishedOrWipFeatures;
+        }
+
+        public int CountActiveStudioFeatures(bool[] studioFeatures)
         {
             int activeCount = 0;
-            foreach (bool feature in gameFeatures)
+            foreach (bool feature in studioFeatures)
             {
                 if (feature)
                 {
@@ -144,9 +176,9 @@ namespace Smart_Studios.Modules.Studios
         private long GetDevCosts()
         {
             long num = 0L;
-            for (int i = 0; i < deactiveGameplay.Length; i++)
+            for (int i = 0; i < deactiveStudioFeatures.Length; i++)
             {
-                if (deactiveGameplay[i])
+                if (deactiveStudioFeatures[i])
                 {
                     num += (long)this.GetCosts(i, this.selectedGame);
                 }
@@ -174,6 +206,7 @@ namespace Smart_Studios.Modules.Studios
         {
             FindScripts();
             Menu_QA = guiMain_.uiObjects[172].GetComponent<Menu_QA_GameplayVerbessern>();
+            buttonAdds = Traverse.Create(Menu_QA).Field("buttonAdds").GetValue<bool[]>();
             Traverse.Create(Menu_QA).Method("FindScripts").GetValue();
             Traverse.Create(Menu_QA).Field("rS_").SetValue(roomScript);
             Traverse.Create(Menu_QA).Field("selectedGame").SetValue(destGameScript);
