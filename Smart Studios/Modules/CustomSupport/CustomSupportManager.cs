@@ -67,7 +67,7 @@ namespace Smart_Studios.Modules.CustomSupport
             if (myTaskUnterstuetzen == null) { return; }
             rS_.taskGameObject = myTaskUnterstuetzen.gameObject;
             rS_.taskID = myTaskUnterstuetzen.gameObject.GetComponent<taskUnterstuetzen>().myID;
-            rS_.taskGameObject.GetComponent<CustomSupportStatus>().SetCustomSupportWaiting(true);
+            //rS_.taskGameObject.GetComponent<CustomSupportStatus>().SetCustomSupportWaiting(true);
         }
 
         void FindScripts()
@@ -143,7 +143,7 @@ namespace Smart_Studios.Modules.CustomSupport
             taskUnterstuetzen taskUnterstuetzen2 = ___guiMain_.AddTask_Unterstuetzen();
             taskUnterstuetzen2.Init(false);
             taskUnterstuetzen2.roomID = destRoomScript.myID;
-            taskUnterstuetzen2.gameObject.AddComponent(typeof(CustomSupportStatus)); //フラグ管理のために、ダミーでCustomSupportStatusを追加する。
+            //taskUnterstuetzen2.gameObject.AddComponent(typeof(CustomSupportStatus)); //フラグ管理のために、ダミーでCustomSupportStatusを追加する。
             srcRoomScript.taskID = taskUnterstuetzen2.myID;
             srcRoomScript.DisableOutlineLayer();
             destRoomScript.DisableOutlineLayer();

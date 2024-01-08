@@ -31,7 +31,6 @@ namespace Smart_Studios.Modules.HarmonyPatches
             taskUnterstuetzen myTaskUnterstuetzen = Traverse.Create(___rS_).Field("myTaskUnterstuetzen").GetValue<taskUnterstuetzen>();
             taskBugfixing myTaskBugfixing = Traverse.Create(___rS_).Field("myTaskBugfixing").GetValue<taskBugfixing>();
             taskPolishing myTaskPolishing = Traverse.Create(___rS_).Field("myTaskPolishing").GetValue<taskPolishing>();
-
             if (myTaskGameplayVerbessern && myTaskUnterstuetzen)
             {
                 myTaskGameplayVerbessern.Abbrechen();
@@ -41,7 +40,6 @@ namespace Smart_Studios.Modules.HarmonyPatches
                     GameObject.Destroy(___rS_.gameObject.GetComponent<CustomSupportManager>());
                 }
             }
-
             //バグフィックスのキャンセルの場合
             if (myTaskBugfixing && myTaskUnterstuetzen)
             {
@@ -52,7 +50,6 @@ namespace Smart_Studios.Modules.HarmonyPatches
                     GameObject.Destroy(___rS_.gameObject.GetComponent<CustomSupportManager>());
                 }
             }
-
             //ポリッシュのキャンセルの場合
             if (myTaskPolishing && myTaskUnterstuetzen)
             {

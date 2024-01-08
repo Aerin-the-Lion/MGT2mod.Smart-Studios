@@ -80,6 +80,8 @@
   <ItemGroup>
     <Compile Include="Modules\CustomSupport\CustomSupportUtilities.cs" />
     <Compile Include="Modules\HarmonyPatches\buildRoomScript_Patch.cs" />
+    <Compile Include="Modules\HarmonyPatches\Menu_NewGameSettings_Patch.cs" />
+    <Compile Include="Modules\HarmonyPatches\savegameScript_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\Menu_W_Aufgabe_Abbrechen_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\mapScript_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\taskUnterstuetzen_Patch.cs" />
@@ -87,9 +89,9 @@
     <Compile Include="Modules\CustomSupport\CustomSupportStatus.cs" />
     <Compile Include="Modules\CustomSupport\CustomSupportManager.cs" />
     <Compile Include="Modules\HarmonyPatches\Menu_Unterstuetzen_Patch.cs" />
-    <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Config\ConfigManager.cs" />
+    <Compile Include="SmartStudios.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

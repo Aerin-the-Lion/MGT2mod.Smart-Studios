@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Smart_Studios.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,26 +91,50 @@ namespace Smart_Studios.Modules.Studios
 			{
 				return;
 			}
-			if (this.mS_.NotEnoughMoney((long)num))
+            bool isNotEnoughMoney = this.mS_.NotEnoughMoney((long)num);
 
+			if (!isNotEnoughMoney)
 			{
-				this.guiMain_.ShowNoMoney();
-				return;
-			}
-            this.sfx_.PlaySound(3, true);
-            this.mS_.Pay((long)num, 10);
+                this.mS_.Pay((long)num, 10);
+            }
+
+            //this.sfx_.PlaySound(3, true);
+            //this.mS_.Pay((long)num, 10);
+
 			taskGameplayVerbessern taskGameplayVerbessern = this.guiMain_.AddTask_GameplayVerbessern();
             taskGameplayVerbessern.Init(false);
             taskGameplayVerbessern.targetID = this.selectedGame.myID;
             for (int i = 0; i < deactiveStudioFeatures.Length; i++)
-			{
-				if (deactiveStudioFeatures[i])
+            {
+                if (isNotEnoughMoney)
+                {
+                    taskGameplayVerbessern.adds[i] = false;
+                }
+                else
+                {
+                    if(!ConfigManager.IsQaAllEnabled.Value)
+                    {
+                        if (ConfigManager.QaLevels[i])
+                        {
+                            if (deactiveStudioFeatures[i])
+                            {
+                                taskGameplayVerbessern.adds[i] = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //ここで、deactiveStudioFeaturesをtaskGameplayVerbessern.addsに反映させる。
+                        if (deactiveStudioFeatures[i])
+                        {
+                            taskGameplayVerbessern.adds[i] = true;
+                        }
+                    }
+                }
+            }
 
-				{
-					taskGameplayVerbessern.adds[i] = true;
-				}
-			}
-            taskGameplayVerbessern.autoBugfix = true;
+            taskGameplayVerbessern.autoBugfix = ConfigManager.IsQaAutoBugfixing.Value;
+
             GameObject gameObject = GameObject.Find("Room_" + this.rS_.myID.ToString());
 			if (gameObject)
 			{
@@ -145,7 +170,6 @@ namespace Smart_Studios.Modules.Studios
                         finishedOrWipFeatures[i] = false;
                     }
                     bool BeingProcessedInAnotherRoom = Traverse.Create(Menu_QA).Method("WirdInAnderenRaumBearbeitet", new object[] { i }).GetValue<bool>();
-                    Debug.Log(BeingProcessedInAnotherRoom);
                     if (BeingProcessedInAnotherRoom)
                     {
                         finishedOrWipFeatures[i] = true;
@@ -171,11 +195,24 @@ namespace Smart_Studios.Modules.Studios
         private long GetDevCosts()
         {
             long num = 0L;
-            for (int i = 0; i < deactiveStudioFeatures.Length; i++)
+            if (ConfigManager.IsQaAllEnabled.Value)
             {
-                if (deactiveStudioFeatures[i])
+                for (int i = 0; i < deactiveStudioFeatures.Length; i++)
                 {
-                    num += (long)this.GetCosts(i, this.selectedGame);
+                    if (deactiveStudioFeatures[i])
+                    {
+                        num += (long)this.GetCosts(i, this.selectedGame);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < ConfigManager.QaLevels.Count; i++)
+                {
+                    if (ConfigManager.QaLevels[i])
+                    {
+                        num += (long)this.GetCosts(i, this.selectedGame);
+                    }
                 }
             }
             return num;

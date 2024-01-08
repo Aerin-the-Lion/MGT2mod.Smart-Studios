@@ -29,7 +29,11 @@ namespace Smart_Studios.Modules.HarmonyPatches
         /// <returns></returns>
         [HarmonyPrefix]
         [HarmonyLib.HarmonyPatch(typeof(Menu_Unterstuetzen), "MouseMovement")]
-        static bool MouseMovement_Prefix(Menu_Unterstuetzen __instance, mainScript ___mS_, pickObjectScript ___pOS_, Camera ___myCamera, mapScript ___mapS_, roomScript ___roomOutlineOld, sfxScript ___sfx_)
+        static bool MouseMovement_Prefix(Menu_Unterstuetzen __instance, 
+            
+            
+            
+            mainScript ___mS_, pickObjectScript ___pOS_, Camera ___myCamera, mapScript ___mapS_, roomScript ___roomOutlineOld, sfxScript ___sfx_)
         {
             Menu_Unterstuetzen instance = __instance;
             mainScript mainScript = ___mS_;

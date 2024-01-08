@@ -66,14 +66,18 @@ namespace Smart_Studios.Modules.HarmonyPatches
         [HarmonyLib.HarmonyPatch(typeof(taskUnterstuetzen), "Update")]
         static void Update_Postfix(taskUnterstuetzen __instance, ref roomScript ___rS_)
         {
+            Debug.Log("taskUnterstuetzen.Update_Postfix 1");
             GetCacheRoomScriptsWhenStart();
+            Debug.Log("taskUnterstuetzen.Update_Postfix 2");
             if (!IsValidForCustomSupport(__instance, ___rS_))
             {
                 return;
             }
-
+            Debug.Log("taskUnterstuetzen.Update_Postfix 3");
             AttachCustomSupportManagerIfNeeded(__instance);
+            Debug.Log("taskUnterstuetzen.Update_Postfix 4");
             PerformCustomSupportActions(__instance, ___rS_);
+            Debug.Log("taskUnterstuetzen.Update_Postfix 5");
         }
 
         /// <summary>
@@ -107,6 +111,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
             if (taskGameObject == null) return;
 
             taskGame destTaskGame = taskGameObject.GetComponent<taskGame>();
+            if (destTaskGame == null) return;
             gameScript destGameScript = destTaskGame?.gS_;
             if (destGameScript == null) return;
 
