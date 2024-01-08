@@ -80,12 +80,16 @@
   <ItemGroup>
     <Compile Include="Modules\CustomSupport\CustomSupportUtilities.cs" />
     <Compile Include="Modules\HarmonyPatches\buildRoomScript_Patch.cs" />
+    <Compile Include="Modules\HarmonyPatches\roomButtonScript_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\Menu_NewGameSettings_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\savegameScript_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\Menu_W_Aufgabe_Abbrechen_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\mapScript_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\taskUnterstuetzen_Patch.cs" />
-    <Compile Include="Modules\Studios\QA_ScriptManager.cs" />
+    <Compile Include="Modules\Studios\MotionCaptureStudioScriptManager.cs" />
+    <Compile Include="Modules\Studios\SoundStudioScriptManager.cs" />
+    <Compile Include="Modules\Studios\GraphicsStudioScriptManager.cs" />
+    <Compile Include="Modules\Studios\QaStudioScriptManager.cs" />
     <Compile Include="Modules\CustomSupport\CustomSupportStatus.cs" />
     <Compile Include="Modules\CustomSupport\CustomSupportManager.cs" />
     <Compile Include="Modules\HarmonyPatches\Menu_Unterstuetzen_Patch.cs" />

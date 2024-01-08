@@ -54,6 +54,9 @@ namespace Smart_Studios.Modules.HarmonyPatches
         */
 
         /// <summary>
+        /// ----------------------------------------------------
+        /// SupportモードのSmart Studios用拡張Harmony Patch
+        /// ----------------------------------------------------
         /// taskUnterstuetzenのUpdate関数のPostfix
         /// 英語だと、taskSupport、要はSupport時の１フレーム毎の処理を行う関数のパッチ。
         /// Postfixなので、元の関数の処理が終わった後に実行されるため、他modの影響を受けにくい。
@@ -66,18 +69,13 @@ namespace Smart_Studios.Modules.HarmonyPatches
         [HarmonyLib.HarmonyPatch(typeof(taskUnterstuetzen), "Update")]
         static void Update_Postfix(taskUnterstuetzen __instance, ref roomScript ___rS_)
         {
-            Debug.Log("taskUnterstuetzen.Update_Postfix 1");
             GetCacheRoomScriptsWhenStart();
-            Debug.Log("taskUnterstuetzen.Update_Postfix 2");
             if (!IsValidForCustomSupport(__instance, ___rS_))
             {
                 return;
             }
-            Debug.Log("taskUnterstuetzen.Update_Postfix 3");
             AttachCustomSupportManagerIfNeeded(__instance);
-            Debug.Log("taskUnterstuetzen.Update_Postfix 4");
             PerformCustomSupportActions(__instance, ___rS_);
-            Debug.Log("taskUnterstuetzen.Update_Postfix 5");
         }
 
         /// <summary>
@@ -116,8 +114,27 @@ namespace Smart_Studios.Modules.HarmonyPatches
             if (destGameScript == null) return;
 
             var srcRoomScript = CustomSupportManager.FindRoomScriptForInstance(instance.name);
-            QA_ScriptManager qA_ScriptManager = new QA_ScriptManager();
-            qA_ScriptManager.AutoStart(srcRoomScript, destGameScript); //これsrcRoomScript入れないといけない。Support元で行わないといけないので。
+
+            if(CustomSupportUtilities.IsTypeOfQaStudio(srcRoomScript))
+            {
+                QaStudioScriptManager qA_ScriptManager = new QaStudioScriptManager();
+                qA_ScriptManager.AutoStart(srcRoomScript, destGameScript); //これsrcRoomScript入れないといけない。Support元で行わないといけないので。
+            }
+            else if(CustomSupportUtilities.IsTypeOfGraphicStudio(srcRoomScript))
+            {
+                GraphicsStudioScriptManager graphicsStudioScriptManager = new GraphicsStudioScriptManager();
+                graphicsStudioScriptManager.AutoStart(srcRoomScript, destGameScript);
+            }
+            else if(CustomSupportUtilities.IsTypeOfSoundStudio(srcRoomScript))
+            {
+                SoundStudioScriptManager soundStudioScriptManager = new SoundStudioScriptManager();
+                soundStudioScriptManager.AutoStart(srcRoomScript, destGameScript);
+            }
+            else if(CustomSupportUtilities.IsTypeOfMotionCaptureStudio(srcRoomScript))
+            {
+                MotionCaptureStudioScriptManager motionCaptureStudioScriptManager = new MotionCaptureStudioScriptManager();
+                motionCaptureStudioScriptManager.AutoStart(srcRoomScript, destGameScript);
+            }
         }
     }
 }

@@ -23,5 +23,25 @@ namespace Smart_Studios.Modules.CustomSupport
             // サポート先がGame Development Studioで、サポート元が有効なタイプかどうかをチェック
             return srcRoomScript != null && destRoomScript.typ == 1 && (Array.IndexOf(validTypes, srcRoomScript.typ) >= 0);
         }
+
+        public static bool IsTypeOfQaStudio(roomScript srcRoomScript)
+        {
+            return srcRoomScript.typ == 3;
+        }
+
+        public static bool IsTypeOfGraphicStudio(roomScript srcRoomScript)
+        {
+            return srcRoomScript.typ == 4;
+        }
+
+        public static bool IsTypeOfSoundStudio(roomScript srcRoomScript)
+        {
+            return srcRoomScript.typ == 5;
+        }
+
+        public static bool IsTypeOfMotionCaptureStudio(roomScript srcRoomScript)
+        {
+            return srcRoomScript.typ == 10;
+        }
     }
 }

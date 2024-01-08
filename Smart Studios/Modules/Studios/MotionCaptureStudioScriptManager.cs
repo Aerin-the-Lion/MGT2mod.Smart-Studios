@@ -6,14 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Smart_Studios.Modules.Studios
 {
-    public class QA_ScriptManager : MonoBehaviour
+    public class MotionCaptureStudioScriptManager
     {
-		public static bool IsAutoStartQAEnabled { get; private set; } = false;
-		public static Menu_QA_GameplayVerbessern Menu_QA { get; private set; }
+        public static Menu_MOCAP_AnimationVerbessern Menu_MotionCapture { get; private set; }
         private GameObject main_;
         private mainScript mS_;
         private engineFeatures eF_;
@@ -74,74 +72,65 @@ namespace Smart_Studios.Modules.Studios
             }
         }
 
-        public void AutoStart(roomScript roomScript, gameScript destGameScript)
-		{
+        public void Init(roomScript roomScript, gameScript destGameScript)
+        {
+            FindScripts();
+            Menu_MotionCapture = guiMain_.uiObjects[178].GetComponent<Menu_MOCAP_AnimationVerbessern>();
+            buttonAdds = Traverse.Create(Menu_MotionCapture).Field("buttonAdds").GetValue<bool[]>();
+            Traverse.Create(Menu_MotionCapture).Method("FindScripts").GetValue();
+            Traverse.Create(Menu_MotionCapture).Field("rS_").SetValue(roomScript);
+            Traverse.Create(Menu_MotionCapture).Field("selectedGame").SetValue(destGameScript);
 
-            //初期化
-            Init(roomScript, destGameScript);
+            rS_ = roomScript;
+            selectedGame = destGameScript;
+        }
+
+        public void AutoStart(roomScript room, gameScript destGameScript)
+        {
+            // Initialization
+            Init(room, destGameScript);
             finishedOrWipStudioFeatures = GetFinishedOrWipStudioFeatures();
             deactiveStudioFeatures = GetDeactiveStudioFeatures(finishedOrWipStudioFeatures);
 
-            int num = Mathf.RoundToInt((float)GetDevCosts());
-            if (!this.selectedGame)
-			{
-				return;
-			}
-			if (!this.rS_)
-			{
-				return;
-			}
-            bool isNotEnoughMoney = this.mS_.NotEnoughMoney((long)num);
+            if (!this.selectedGame || !this.rS_) { return; }
 
-			if (!isNotEnoughMoney)
-			{
-                this.mS_.Pay((long)num, 10);
+            int devCosts = Mathf.RoundToInt((float)GetDevCosts());
+            bool isNotEnoughMoney = this.mS_.NotEnoughMoney(devCosts);
+            if (!isNotEnoughMoney)
+            {
+                this.mS_.Pay(devCosts, 10);
             }
 
-            //this.sfx_.PlaySound(3, true);
-            //this.mS_.Pay((long)num, 10);
+            taskAnimationVerbessern task = this.guiMain_.AddTask_AnimationVerbessern();
+            task.Init(false);
+            LinkTaskToRoom(task);
+            InitializeTask(task, isNotEnoughMoney);
+        }
 
-			taskGameplayVerbessern taskGameplayVerbessern = this.guiMain_.AddTask_GameplayVerbessern();
-            taskGameplayVerbessern.Init(false);
-            taskGameplayVerbessern.targetID = this.selectedGame.myID;
+        private void InitializeTask(taskAnimationVerbessern task, bool isNotEnoughMoney)
+        {
+            task.targetID = this.selectedGame.myID;
+            SetTaskFeatures(task, isNotEnoughMoney);
+            task.FindNewAdd();
+            //本体の起動メソッド
+        }
+
+        private void SetTaskFeatures(taskAnimationVerbessern task, bool isNotEnoughMoney)
+        {
             for (int i = 0; i < deactiveStudioFeatures.Length; i++)
             {
-                if (isNotEnoughMoney)
-                {
-                    taskGameplayVerbessern.adds[i] = false;
-                }
-                else
-                {
-                    if(!ConfigManager.IsQaAllEnabled.Value)
-                    {
-                        if (ConfigManager.QaLevels[i])
-                        {
-                            if (deactiveStudioFeatures[i])
-                            {
-                                taskGameplayVerbessern.adds[i] = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //ここで、deactiveStudioFeaturesをtaskGameplayVerbessern.addsに反映させる。
-                        if (deactiveStudioFeatures[i])
-                        {
-                            taskGameplayVerbessern.adds[i] = true;
-                        }
-                    }
-                }
+                task.adds[i] = deactiveStudioFeatures[i] && !isNotEnoughMoney &&
+                               (ConfigManager.IsMotionCaptureAllEnabled.Value || ConfigManager.MotionCaptureLevels[i]);
             }
+        }
 
-            taskGameplayVerbessern.autoBugfix = ConfigManager.IsQaAutoBugfixing.Value;
-
-            GameObject gameObject = GameObject.Find("Room_" + this.rS_.myID.ToString());
-			if (gameObject)
-			{
-				gameObject.GetComponent<roomScript>().taskID = taskGameplayVerbessern.myID;
-			}
-            //本体の起動メソッド
-            taskGameplayVerbessern.FindNewAdd();
+        private void LinkTaskToRoom(taskAnimationVerbessern task)
+        {
+            GameObject roomObject = GameObject.Find("Room_" + this.rS_.myID.ToString());
+            if (roomObject)
+            {
+                roomObject.GetComponent<roomScript>().taskID = task.myID;
+            }
         }
 
         public bool[] GetDeactiveStudioFeatures(bool[] studioFeatures)
@@ -169,7 +158,7 @@ namespace Smart_Studios.Modules.Studios
                     {
                         finishedOrWipFeatures[i] = false;
                     }
-                    bool BeingProcessedInAnotherRoom = Traverse.Create(Menu_QA).Method("WirdInAnderenRaumBearbeitet", new object[] { i }).GetValue<bool>();
+                    bool BeingProcessedInAnotherRoom = Traverse.Create(Menu_MotionCapture).Method("WirdInAnderenRaumBearbeitet", new object[] { i }).GetValue<bool>();
                     if (BeingProcessedInAnotherRoom)
                     {
                         finishedOrWipFeatures[i] = true;
@@ -194,28 +183,22 @@ namespace Smart_Studios.Modules.Studios
 
         private long GetDevCosts()
         {
-            long num = 0L;
-            if (ConfigManager.IsQaAllEnabled.Value)
+            long totalCosts = 0L;
+            //条件式 ? 真の場合の値 : 偽の場合の値
+            int featureCount = ConfigManager.IsMotionCaptureAllEnabled.Value ? deactiveStudioFeatures.Length : ConfigManager.MotionCaptureLevels.Count;
+
+            for (int i = 0; i < featureCount; i++)
             {
-                for (int i = 0; i < deactiveStudioFeatures.Length; i++)
+                if (!deactiveStudioFeatures[i]) continue;
+
+                bool featureActive = ConfigManager.IsMotionCaptureAllEnabled.Value || ConfigManager.MotionCaptureLevels[i];
+                if (featureActive)
                 {
-                    if (deactiveStudioFeatures[i])
-                    {
-                        num += (long)this.GetCosts(i, this.selectedGame);
-                    }
+                    totalCosts += (long)GetCosts(i, this.selectedGame);
                 }
             }
-            else
-            {
-                for (int i = 0; i < ConfigManager.QaLevels.Count; i++)
-                {
-                    if (ConfigManager.QaLevels[i])
-                    {
-                        num += (long)this.GetCosts(i, this.selectedGame);
-                    }
-                }
-            }
-            return num;
+
+            return totalCosts;
         }
 
         public int GetCosts(int i, gameScript script_)
@@ -224,7 +207,7 @@ namespace Smart_Studios.Modules.Studios
             {
                 return 0;
             }
-            int[] costs = Traverse.Create(Menu_QA).Field("costs").GetValue<int[]>();
+            int[] costs = Traverse.Create(Menu_MotionCapture).Field("costs").GetValue<int[]>();
             int num = costs[i] * script_.GetPointsForAdds();
             num = num / 1000 * 1000;
             if (num < 1000)
@@ -232,19 +215,6 @@ namespace Smart_Studios.Modules.Studios
                 num = 1000;
             }
             return num;
-        }
-
-        public void Init(roomScript roomScript, gameScript destGameScript)
-        {
-            FindScripts();
-            Menu_QA = guiMain_.uiObjects[172].GetComponent<Menu_QA_GameplayVerbessern>();
-            buttonAdds = Traverse.Create(Menu_QA).Field("buttonAdds").GetValue<bool[]>();
-            Traverse.Create(Menu_QA).Method("FindScripts").GetValue();
-            Traverse.Create(Menu_QA).Field("rS_").SetValue(roomScript);
-            Traverse.Create(Menu_QA).Field("selectedGame").SetValue(destGameScript);
-
-            rS_ = roomScript;
-            selectedGame = destGameScript;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Smart_Studios
     {
         public const string PluginGuid = "me.Aerin_the_Lion.Mad_Games_Tycoon_2.plugins.SmartStudios";
         public const string PluginName = "Smart Studios";
-        public const string PluginVersion = "0.0.0.8";
+        public const string PluginVersion = "1.0.0.0";
 
         void Awake()
         {
@@ -28,6 +28,7 @@ namespace Smart_Studios
             Harmony.CreateAndPatchAll(typeof(Menu_W_Aufgabe_Abbrechen_Patch));
             Harmony.CreateAndPatchAll(typeof(savegameScript_Patch));
             Harmony.CreateAndPatchAll(typeof(Menu_NewGameSettings_Patch));
+            Harmony.CreateAndPatchAll(typeof(roomButtonScript_Patch));
 
 
         }
