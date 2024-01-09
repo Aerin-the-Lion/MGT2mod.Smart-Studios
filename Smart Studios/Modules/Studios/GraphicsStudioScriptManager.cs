@@ -122,6 +122,12 @@ namespace Smart_Studios.Modules.Studios
             {
                 task.adds[i] = deactiveStudioFeatures[i] && !isNotEnoughMoney &&
                                (ConfigManager.IsGraphicsAllEnabled.Value || ConfigManager.GraphicsLevels[i]);
+
+                //GameDevelopmentStudioのGameplayFeaturesのScene Cut？が有効じゃないと使えないため。
+                if (i == 5 && this.selectedGame && !this.selectedGame.gameGameplayFeatures[40])
+                {
+                    task.adds[i] = false;
+                }
             }
         }
 

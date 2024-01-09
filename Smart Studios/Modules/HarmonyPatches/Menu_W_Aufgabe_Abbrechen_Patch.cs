@@ -39,7 +39,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
             //QA Studioのキャンセルの場合
             if (myTaskGameplayVerbessern && myTaskUnterstuetzen)
             {
-                myTaskGameplayVerbessern.Abbrechen();
+                //myTaskGameplayVerbessern.Abbrechen();
                 myTaskUnterstuetzen.Abbrechen();
                 if(___rS_.gameObject.GetComponent<CustomSupportManager>())
                 {
@@ -49,7 +49,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
             //バグフィックスのキャンセルの場合
             if (myTaskBugfixing && myTaskUnterstuetzen)
             {
-                myTaskBugfixing.Abbrechen();
+                //myTaskBugfixing.Abbrechen();
                 myTaskUnterstuetzen.Abbrechen();
                 if (___rS_.gameObject.GetComponent<CustomSupportManager>())
                 {
@@ -59,7 +59,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
             //ポリッシュのキャンセルの場合
             if (myTaskPolishing && myTaskUnterstuetzen)
             {
-                myTaskPolishing.Abbrechen();
+                //myTaskPolishing.Abbrechen();
                 myTaskUnterstuetzen.Abbrechen();
                 if (___rS_.gameObject.GetComponent<CustomSupportManager>())
                 {
@@ -70,7 +70,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
             //Graphics Studioのキャンセルの場合
             if(myTaskGrafikVerbessern && myTaskUnterstuetzen)
             {
-                myTaskGrafikVerbessern.Abbrechen();
+                //myTaskGrafikVerbessern.Abbrechen();
                 myTaskUnterstuetzen.Abbrechen();
                 if (___rS_.gameObject.GetComponent<CustomSupportManager>())
                 {
@@ -81,7 +81,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
             //Sound Studioのキャンセルの場合
             if (myTaskSoundVerbessern && myTaskUnterstuetzen)
             {
-                myTaskSoundVerbessern.Abbrechen();
+                //myTaskSoundVerbessern.Abbrechen();
                 myTaskUnterstuetzen.Abbrechen();
                 if (___rS_.gameObject.GetComponent<CustomSupportManager>())
                 {
@@ -92,7 +92,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
             //Motion Capture Studioのキャンセルの場合
             if(taskAnimationVerbessern && myTaskUnterstuetzen)
             {
-                taskAnimationVerbessern.Abbrechen();
+                //taskAnimationVerbessern.Abbrechen();
                 myTaskUnterstuetzen.Abbrechen();
                 if (___rS_.gameObject.GetComponent<CustomSupportManager>())
                 {

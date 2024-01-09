@@ -121,6 +121,12 @@ namespace Smart_Studios.Modules.Studios
             {
                 task.adds[i] = deactiveStudioFeatures[i] && !isNotEnoughMoney &&
                                (ConfigManager.IsSoundAllEnabled.Value || ConfigManager.SoundLevels[i]);
+
+                //GameDevelopmentStudioのGameplayFeaturesの？が有効じゃないと使えないため。
+                if (i == 5 && this.selectedGame && !this.selectedGame.gameGameplayFeatures[41])
+                {
+                    task.adds[i] = false;
+                }
             }
         }
 
