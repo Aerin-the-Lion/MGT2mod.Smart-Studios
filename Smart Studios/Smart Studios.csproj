@@ -39,6 +39,9 @@
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mad Games Tycoon 2\Mad Games Tycoon 2_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mad Games Tycoon 2\Mad Games Tycoon 2_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mad Games Tycoon 2\BepInEx\core\BepInEx.dll</HintPath>
       <Private>False</Private>
@@ -90,7 +93,7 @@
     <Compile Include="Modules\Studios\SoundStudioScriptManager.cs" />
     <Compile Include="Modules\Studios\GraphicsStudioScriptManager.cs" />
     <Compile Include="Modules\Studios\QaStudioScriptManager.cs" />
-    <Compile Include="Modules\CustomSupport\CustomSupportStatus.cs" />
+    <Compile Include="Modules\CustomSupport\CustomSupportRoomData.cs" />
     <Compile Include="Modules\CustomSupport\CustomSupportManager.cs" />
     <Compile Include="Modules\HarmonyPatches\Menu_Unterstuetzen_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

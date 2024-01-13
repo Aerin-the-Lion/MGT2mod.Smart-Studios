@@ -32,7 +32,10 @@ namespace Smart_Studios.Modules.CustomSupport
         public roomScript rS_;
         public GameObject myTaskUnterstuetzenObject;
 
-        private static List<roomScript> cachedRoomScripts = new List<roomScript>();
+        public static List<roomScript> cachedRoomScripts = new List<roomScript>();
+
+        public float updateInterval = 0.5f; // 更新間隔を秒で設定
+        private float timer = 0f;
 
 
         void Start()
@@ -45,10 +48,15 @@ namespace Smart_Studios.Modules.CustomSupport
 
         void Update()
         {
-            //各種StudioのSupport先の開発が終了した後、taskGame、IDをCustomSupportに再設定させる処理。
-            if (ShouldRetrieveTaskUnterstuetzen())
+            timer += Time.deltaTime;
+            if (timer >= updateInterval)
             {
-                GetMyTaskUnterstuetzen();
+                //各種StudioのSupport先の開発が終了した後、taskGame、IDをCustomSupportに再設定させる処理。
+                if (ShouldRetrieveTaskUnterstuetzen())
+                {
+                    GetMyTaskUnterstuetzen();
+                }
+                timer = 0f;
             }
         }
 
@@ -67,7 +75,6 @@ namespace Smart_Studios.Modules.CustomSupport
             if (myTaskUnterstuetzen == null) { return; }
             rS_.taskGameObject = myTaskUnterstuetzen.gameObject;
             rS_.taskID = myTaskUnterstuetzen.gameObject.GetComponent<taskUnterstuetzen>().myID;
-            //rS_.taskGameObject.GetComponent<CustomSupportStatus>().SetCustomSupportWaiting(true);
         }
 
         void FindScripts()
@@ -149,15 +156,6 @@ namespace Smart_Studios.Modules.CustomSupport
             destRoomScript.DisableOutlineLayer();
         }
 
-        //CustomSupportの設定・命名
-        public void SetCustomSupport(GameObject gameObject)
-        {
-            if (gameObject.GetComponent(typeof(CustomSupportStatus)))
-            {
-                gameObject.GetComponent<CustomSupportStatus>().isCustomSupport = true;
-            }
-        }
-
         /// <summary>
         /// RoomScriptのキャッシュを更新する関数
         /// 適切なタイミングでの使用を推奨
@@ -184,5 +182,7 @@ namespace Smart_Studios.Modules.CustomSupport
         {
             return cachedRoomScripts.FirstOrDefault(r => r.taskGameObject?.name == name);
         }
+
+
     }
 }

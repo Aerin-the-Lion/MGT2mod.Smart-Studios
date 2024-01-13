@@ -11,7 +11,7 @@ namespace Smart_Studios
     {
         public const string PluginGuid = "me.Aerin_the_Lion.Mad_Games_Tycoon_2.plugins.SmartStudios";
         public const string PluginName = "Smart Studios";
-        public const string PluginVersion = "1.0.1.0";
+        public const string PluginVersion = "1.1.0.0";
 
         void Awake()
         {
