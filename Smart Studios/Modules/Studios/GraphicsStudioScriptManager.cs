@@ -157,7 +157,7 @@ namespace Smart_Studios.Modules.Studios
             {
                 if (this.selectedGame)
                 {
-                    if (this.selectedGame.gameplayStudio[i])
+                    if (this.selectedGame.grafikStudio[i])
                     {
                         finishedOrWipFeatures[i] = true;
                     }
@@ -167,6 +167,12 @@ namespace Smart_Studios.Modules.Studios
                     }
                     bool BeingProcessedInAnotherRoom = Traverse.Create(Menu_Graphics).Method("WirdInAnderenRaumBearbeitet", new object[] { i }).GetValue<bool>();
                     if (BeingProcessedInAnotherRoom)
+                    {
+                        finishedOrWipFeatures[i] = true;
+                    }
+
+                    //変数名と違うが、GameDevelopmentStudioのGameplayFeaturesのScene Cut？が有効じゃないと使えないため。
+                    if (i == 5 && this.selectedGame && !this.selectedGame.gameGameplayFeatures[40])
                     {
                         finishedOrWipFeatures[i] = true;
                     }

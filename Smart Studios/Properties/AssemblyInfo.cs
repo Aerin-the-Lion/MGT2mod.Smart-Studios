@@ -33,5 +33,9 @@ using Smart_Studios;
 // すべての値を指定するか、次を使用してビルド番号とリビジョン番号を既定に設定できます
 // 既定値にすることができます:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(SmartStudios.PluginVersion)]
-[assembly: AssemblyFileVersion(SmartStudios.PluginVersion)]
+//
+//
+//[assembly: AssemblyVersion(SmartStudios.PluginVersion)]
+//[assembly: AssemblyFileVersion(SmartStudios.PluginVersion)]
+[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]

@@ -7,7 +7,8 @@ using System.Collections.Generic;
 namespace Smart_Studios.Config
 {
     [BepInPlugin(SmartStudios.PluginGuid, SmartStudios.PluginName, SmartStudios.PluginVersion)]
-    public class ConfigManager : BaseUnityPlugin
+    [BepInProcess("Mad Games Tycoon 2.exe")]
+    public class ConfigManager
     {
         private ConfigFile ConfigFile { get; set; }
 
@@ -273,8 +274,11 @@ namespace Smart_Studios.Config
 
         private void OnConfigSettingChanged(object sender, SettingChangedEventArgs e)
         {
-            // Config setting change handling logic here
+            Debug.Log(SmartStudios.PluginName + " : Config setting changed");
             InitQaLevels();
+            InitGraphicsLevels();
+            InitSoundLevels();
+            InitMotionCaptureLevels();
         }
 
         private void InitQaLevels()

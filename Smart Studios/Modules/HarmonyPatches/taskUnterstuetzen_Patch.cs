@@ -83,25 +83,34 @@ namespace Smart_Studios.Modules.HarmonyPatches
             gameScript destGameScript = destTaskGame?.gS_;
             if (destGameScript == null) return;
 
+            //これで、特定のtaskUnterstuetzenをtaskGameObjectに所持しているroomScriptのみ取得する。
             var srcRoomScript = CustomSupportManager.FindRoomScriptForInstance(instance.name);
+            if (srcRoomScript == null) return;
+
+            //念のため、srcRoomScriptのtaskGameObjectがtaskUnterstuetzenを所持しているかどうかを確認する。
+            if (srcRoomScript.taskGameObject.GetComponent<taskUnterstuetzen>() == null) { Debug.Log("DEBUG: Detected unusual behavior.");  return; }
 
             if(CustomSupportUtilities.IsTypeOfQaStudio(srcRoomScript))
             {
+                Debug.Log("QA Studio : Auto Start");
                 QaStudioScriptManager qA_ScriptManager = new QaStudioScriptManager();
                 qA_ScriptManager.AutoStart(srcRoomScript, destGameScript); //これsrcRoomScript入れないといけない。Support元で行わないといけないので。
             }
             else if(CustomSupportUtilities.IsTypeOfGraphicStudio(srcRoomScript))
             {
+                Debug.Log("Graphic Studio : Auto Start");
                 GraphicsStudioScriptManager graphicsStudioScriptManager = new GraphicsStudioScriptManager();
                 graphicsStudioScriptManager.AutoStart(srcRoomScript, destGameScript);
             }
             else if(CustomSupportUtilities.IsTypeOfSoundStudio(srcRoomScript))
             {
+                Debug.Log("Sound Studio : Auto Start");
                 SoundStudioScriptManager soundStudioScriptManager = new SoundStudioScriptManager();
                 soundStudioScriptManager.AutoStart(srcRoomScript, destGameScript);
             }
             else if(CustomSupportUtilities.IsTypeOfMotionCaptureStudio(srcRoomScript))
             {
+                Debug.Log("Motion Capture Studio : Auto Start");
                 MotionCaptureStudioScriptManager motionCaptureStudioScriptManager = new MotionCaptureStudioScriptManager();
                 motionCaptureStudioScriptManager.AutoStart(srcRoomScript, destGameScript);
             }

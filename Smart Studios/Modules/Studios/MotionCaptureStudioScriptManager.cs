@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Smart_Studios.Modules.Studios
 {
-    public class MotionCaptureStudioScriptManager
+    public class MotionCaptureStudioScriptManager : MonoBehaviour
     {
         public static Menu_MOCAP_AnimationVerbessern Menu_MotionCapture { get; private set; }
         private GameObject main_;
@@ -150,7 +150,7 @@ namespace Smart_Studios.Modules.Studios
             {
                 if (this.selectedGame)
                 {
-                    if (this.selectedGame.gameplayStudio[i])
+                    if (this.selectedGame.motionCaptureStudio[i])
                     {
                         finishedOrWipFeatures[i] = true;
                     }
