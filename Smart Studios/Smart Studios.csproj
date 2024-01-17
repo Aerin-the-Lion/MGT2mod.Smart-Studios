@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mad Games Tycoon 2\Mad Games Tycoon 2_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mad Games Tycoon 2\BepInEx\core\BepInEx.dll</HintPath>
@@ -83,6 +84,7 @@
   <ItemGroup>
     <Compile Include="Modules\CustomSupport\CustomSupportUtilities.cs" />
     <Compile Include="Modules\HarmonyPatches\buildRoomScript_Patch.cs" />
+    <Compile Include="Modules\HarmonyPatches\Abbrechen_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\roomButtonScript_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\Menu_NewGameSettings_Patch.cs" />
     <Compile Include="Modules\HarmonyPatches\savegameScript_Patch.cs" />

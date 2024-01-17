@@ -11,11 +11,14 @@ using System.Security.Cryptography;
 namespace Smart_Studios.Modules.CustomSupport
 {
     /// <summary>
-    /// StartStudios専用のSupport待機処理のためのクラス
-    /// Room_*******のGameObjectにアタッチする。
+    /// StartStudios専用のSupport待機処理など、全体的な管理を行うクラス。
+    /// (!!!)Room_*******のGameObjectにアタッチするようにしてください。
     /// </summary>
     public class CustomSupportManager : MonoBehaviour
     {
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
+        // Fields
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
         public int myID = -1;
         public int roomID = -1;
         private GameObject main_;
@@ -29,15 +32,34 @@ namespace Smart_Studios.Modules.CustomSupport
         public gameScript selectedGame;
         public taskGame destMyTaskGame;
         public gameScript destGameScript;
-        public roomScript rS_;
+        public roomScript myRoomScript;
         public GameObject myTaskUnterstuetzenObject;
 
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
+        // Static Fields
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// RoomScriptのキャッシュ。ここには、ゲーム全体のRoomScriptのインスタンスが格納される。
+        /// 適切なタイミングでCacheRoomScriptsの更新が必要。
+        ///　RoomScript cache. This contains instances of RoomScript for the entire game.
+        ///　CacheRoomScripts needs to be updated at the appropriate time.
+        /// </summary>
         public static List<roomScript> cachedRoomScripts = new List<roomScript>();
 
+        public bool isInSupportMode = true;
+        public bool isImprovingGame = false;
+
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
+        // Timer
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
         public float updateInterval = 0.5f; // 更新間隔を秒で設定
         private float timer = 0f;
+        // --------------------------------------------------------------------------------------------------
 
 
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
+        // Unity Methods
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
         void Start()
         {
             //ここで、StartStudiosのSupport待機処理のためのクラスを初期化する。
@@ -46,36 +68,73 @@ namespace Smart_Studios.Modules.CustomSupport
             CacheRoomScripts();
         }
 
+        /// <summary>
+        /// n秒ごとに、各種StudioのSupport先の開発が終了した後、taskGame、IDをCustomSupportManagerの付いたroomScriptオブジェクトに再設定させる処理。
+        /// Every n seconds, after the development of the support destination of each studio is completed, the taskGame and ID are reset to the roomScript object with CustomSupportManager.
+        /// </summary>
         void Update()
         {
             timer += Time.deltaTime;
             if (timer >= updateInterval)
             {
-                //各種StudioのSupport先の開発が終了した後、taskGame、IDをCustomSupportに再設定させる処理。
-                if (ShouldRetrieveTaskUnterstuetzen())
+                if (ShouldRetrieveTaskUnterstuetzen()) //各種StudioのSupport先の開発が終了した後、taskGame、IDをCustomSupportに再設定させる処理。
                 {
                     GetMyTaskUnterstuetzen();
                 }
                 timer = 0f;
             }
         }
+        // --------------------------------------------------------------------------------------------------
 
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
+        // Methods
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
         bool ShouldRetrieveTaskUnterstuetzen()
         {
-            return rS_.taskGameObject == null && rS_.taskID == -1;
+            return myRoomScript.taskGameObject == null && myRoomScript.taskID == -1 && isImprovingGame == false;
         }
-
 
         /// <summary>
         /// 各種StudioのSupport先の開発が終了した後、taskGame、IDをCustomSupportに再設定させる処理。
         /// </summary>
         void GetMyTaskUnterstuetzen()
         {
-            taskUnterstuetzen myTaskUnterstuetzen = Traverse.Create(rS_).Field("myTaskUnterstuetzen").GetValue<taskUnterstuetzen>();
+            taskUnterstuetzen myTaskUnterstuetzen = Traverse.Create(myRoomScript).Field("myTaskUnterstuetzen").GetValue<taskUnterstuetzen>();
             if (myTaskUnterstuetzen == null) { return; }
-            rS_.taskGameObject = myTaskUnterstuetzen.gameObject;
-            rS_.taskID = myTaskUnterstuetzen.gameObject.GetComponent<taskUnterstuetzen>().myID;
+            myRoomScript.taskGameObject = myTaskUnterstuetzen.gameObject;
+            myRoomScript.taskID = myTaskUnterstuetzen.gameObject.GetComponent<taskUnterstuetzen>().myID;
+            this.SetIsInSupportMode(true);
         }
+
+        public void SetIsInSupportMode(bool status)
+        {
+            isInSupportMode = status;
+        }
+
+        public void SetIsImprovingGame(bool status)
+        {
+            isImprovingGame = status;
+        }
+
+        public bool GetIsInSupportMode()
+        {
+            return isInSupportMode;
+        }
+
+        public bool GetIsImprovingGame()
+        {
+            return isImprovingGame;
+        }
+
+        /// <summary>
+        /// __instance.nameと一致するtaskGameObjectを持つroomScriptを探す関数
+        /// CachedRoomScriptsに対してのみ有効、適切なタイミングでCacheRoomScriptsの更新が必要。
+        /// </summary>
+        public static roomScript FindRoomScriptForInstance(string name)
+        {
+            return cachedRoomScripts.FirstOrDefault(r => r.taskGameObject?.name == name);
+        }
+
 
         void FindScripts()
         {
@@ -115,45 +174,10 @@ namespace Smart_Studios.Modules.CustomSupport
             {
                 this.sfx_ = GameObject.Find("SFX").GetComponent<sfxScript>();
             }
-            if (!rS_)
+            if (!myRoomScript)
             {
-                rS_ = this.gameObject.GetComponent<roomScript>();
+                myRoomScript = this.gameObject.GetComponent<roomScript>();
             }
-        }
-
-        //script_はSupport先のroomScript, ___rS_はSupport元のroomScript, ___mS_はmainScript, ___guiMain_はGUI_Main
-        public void EnterSupportMode(roomScript destRoomScript, roomScript srcRoomScript, mainScript ___mS_, GUI_Main ___guiMain_)
-        {
-            //もしすでにSupport先のroomScriptがある場合は、Supportをキャンセルする。
-            for (int i = 0; i < ___mS_.arrayRoomScripts.Length; i++)
-            {
-                if (___mS_.arrayRoomScripts[i] && ___mS_.arrayRoomScripts[i].taskGameObject)
-                {
-                    taskUnterstuetzen taskUnterstuetzen = ___mS_.arrayRoomScripts[i].GetTaskUnterstuetzen();
-                    if (taskUnterstuetzen && taskUnterstuetzen.roomID == srcRoomScript.myID)
-                    {
-                        taskUnterstuetzen.Abbrechen();
-                    }
-                }
-            }
-            //もしSupport先がSupport状態である場合は、Supportをキャンセルする。
-            if (destRoomScript.taskID != -1)
-            {
-                GameObject gameObject = GameObject.Find("Task_" + destRoomScript.taskID.ToString());
-                if (gameObject && gameObject.GetComponent<taskUnterstuetzen>())
-                {
-                    gameObject.GetComponent<taskUnterstuetzen>().Abbrechen();
-                }
-            }
-
-            //メイン処理
-            taskUnterstuetzen taskUnterstuetzen2 = ___guiMain_.AddTask_Unterstuetzen();
-            taskUnterstuetzen2.Init(false);
-            taskUnterstuetzen2.roomID = destRoomScript.myID;
-            //taskUnterstuetzen2.gameObject.AddComponent(typeof(CustomSupportStatus)); //フラグ管理のために、ダミーでCustomSupportStatusを追加する。
-            srcRoomScript.taskID = taskUnterstuetzen2.myID;
-            srcRoomScript.DisableOutlineLayer();
-            destRoomScript.DisableOutlineLayer();
         }
 
         /// <summary>
@@ -174,15 +198,6 @@ namespace Smart_Studios.Modules.CustomSupport
             }
         }
 
-        /// <summary>
-        /// __instance.nameと一致するtaskGameObjectを持つroomScriptを探す関数
-        /// CachedRoomScriptsに対してのみ有効、適切なタイミングでCacheRoomScriptsの更新が必要。
-        /// </summary>
-        public static roomScript FindRoomScriptForInstance(string name)
-        {
-            return cachedRoomScripts.FirstOrDefault(r => r.taskGameObject?.name == name);
-        }
-
-
+        // --------------------------------------------------------------------------------------------------
     }
 }

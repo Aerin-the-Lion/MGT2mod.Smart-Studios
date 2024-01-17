@@ -30,9 +30,6 @@ namespace Smart_Studios.Modules.HarmonyPatches
         [HarmonyPrefix]
         [HarmonyLib.HarmonyPatch(typeof(Menu_Unterstuetzen), "MouseMovement")]
         static bool MouseMovement_Prefix(Menu_Unterstuetzen __instance, 
-            
-            
-            
             mainScript ___mS_, pickObjectScript ___pOS_, Camera ___myCamera, mapScript ___mapS_, roomScript ___roomOutlineOld, sfxScript ___sfx_)
         {
             Menu_Unterstuetzen instance = __instance;
@@ -152,7 +149,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
 
             if (CustomSupportUtilities.IsSuitableCustomSupportForGameDev(sourceRoomScript, targetRoomScript))
             {
-                AttachCustomSupportManagerToGameObject(sourceRoomScript, targetRoomScript, mainScript, guiMain);
+                EnterCustomSupportAndSetManager(sourceRoomScript, targetRoomScript, mainScript, guiMain);
             }
 
             instance.BUTTON_Close();
@@ -171,6 +168,7 @@ namespace Smart_Studios.Modules.HarmonyPatches
                 if (room && room.taskGameObject)
                 {
                     var supportTask = room.GetTaskUnterstuetzen();
+                    // 取得したtaskUnterstuetzen.roomID = サポート先が、sourceRoomScriptのtaskUnterstuetzenである場合、キャンセル処理を行う。
                     if (supportTask && supportTask.roomID == sourceRoomScript.myID)
                     {
                         supportTask.Abbrechen();
@@ -178,11 +176,15 @@ namespace Smart_Studios.Modules.HarmonyPatches
                 }
             }
 
+            //ver1.16 オリジナル要素、これを削除すると、サポートタスク持ちにもサポートできるようになる。
+            //ただし、なにも無くても、なんか挙動がおかしい…今のところ問題なさそう。
+            /*
             if (targetRoomScript.taskID != -1)
             {
                 GameObject taskObject = GameObject.Find($"Task_{targetRoomScript.taskID}");
                 taskObject?.GetComponent<taskUnterstuetzen>()?.Abbrechen();
             }
+            */
         }
 
         private static void InitializeTask(taskUnterstuetzen task, roomScript targetRoomScript, roomScript sourceRoomScript)
@@ -194,12 +196,12 @@ namespace Smart_Studios.Modules.HarmonyPatches
             targetRoomScript.DisableOutlineLayer();
         }
 
-        private static void AttachCustomSupportManagerToGameObject(roomScript sourceRoomScript, roomScript targetRoomScript, mainScript mainScript, GUI_Main guiMain)
+        private static void EnterCustomSupportAndSetManager(roomScript sourceRoomScript, roomScript targetRoomScript, mainScript mainScript, GUI_Main guiMain)
         {
             var customSupportManager = sourceRoomScript.gameObject.GetComponent<CustomSupportManager>() ?? sourceRoomScript.gameObject.AddComponent<CustomSupportManager>();
-            customSupportManager.EnterSupportMode(targetRoomScript, sourceRoomScript, mainScript, guiMain);
-            sourceRoomScript.DisableOutlineLayer();
-            targetRoomScript.DisableOutlineLayer();
+            if(customSupportManager == null) { return; }
+            CustomSupportUtilities.EnterSupportMode(targetRoomScript, sourceRoomScript, mainScript, guiMain);
+            customSupportManager.SetIsInSupportMode(true);
         }
     }
 }

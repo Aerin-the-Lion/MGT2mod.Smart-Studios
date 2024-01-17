@@ -44,11 +44,13 @@ namespace Smart_Studios.Modules.HarmonyPatches
                     GameObject taskObject = CustomSupportRoomData.GetGameObjectTaskUnterstuetzen(data.taskID);
                     if (taskObject != null)
                     {
-                        Traverse.Create(matchedRoom).Field("myTaskUnterstuetzen").SetValue(taskObject.GetComponent<taskUnterstuetzen>());
+                        Debug.Log("CustomSupport: Set taskUnterstuetzen to room " + matchedRoom.myID);
                         if (matchedRoom.gameObject.GetComponent<CustomSupportManager>() == null)
                         {
                             matchedRoom.gameObject.AddComponent<CustomSupportManager>();
                         }
+                        Debug.Log(taskObject.GetComponent<taskUnterstuetzen>().name);
+                        Traverse.Create(matchedRoom).Field("myTaskUnterstuetzen").SetValue(taskObject.GetComponent<taskUnterstuetzen>());
                     }
                 }
             }

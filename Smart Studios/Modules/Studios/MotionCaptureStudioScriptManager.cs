@@ -158,7 +158,7 @@ namespace Smart_Studios.Modules.Studios
                     {
                         finishedOrWipFeatures[i] = false;
                     }
-                    bool BeingProcessedInAnotherRoom = Traverse.Create(Menu_MotionCapture).Method("WirdInAnderenRaumBearbeitet", new object[] { i }).GetValue<bool>();
+                    bool BeingProcessedInAnotherRoom = Traverse.Create(Menu_MotionCapture).Method("WirdInAnderenRaumBearbeitet", new object[] { i, selectedGame}).GetValue<bool>();
                     if (BeingProcessedInAnotherRoom)
                     {
                         finishedOrWipFeatures[i] = true;
