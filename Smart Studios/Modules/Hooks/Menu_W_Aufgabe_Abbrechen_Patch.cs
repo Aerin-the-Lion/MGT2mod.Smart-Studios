@@ -3,7 +3,7 @@ using HarmonyLib;
 using Smart_Studios.Modules.CustomSupport;
 using UnityEngine;
 
-namespace Smart_Studios.Modules.HarmonyPatches
+namespace Smart_Studios.Modules.Hooks
 {
     /// <summary>
     /// --------------------------------------------------------

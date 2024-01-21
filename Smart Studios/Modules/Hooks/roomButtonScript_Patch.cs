@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Smart_Studios.Modules.HarmonyPatches
+namespace Smart_Studios.Modules.Hooks
 {
     public class roomButtonScript_Patch
     {

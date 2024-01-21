@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Smart_Studios.Modules.HarmonyPatches
+namespace Smart_Studios.Modules.Hooks
 {
-    internal class Menu_NewGameSettings_Patch
+    public class buildRoomScript_Patch
     {
         [HarmonyPostfix]
-        [HarmonyLib.HarmonyPatch(typeof(Menu_NewGameSettings), "BUTTON_OK")]
-        public static void AfterLoadGame_Patch()
+        [HarmonyLib.HarmonyPatch(typeof(buildRoomScript), "CreateRoom")]
+        public static void AfterObjectAdded()
         {
             // Roomオブジェクトが追加された後に実行されるコード
             CustomSupportManager.CacheRoomScripts();

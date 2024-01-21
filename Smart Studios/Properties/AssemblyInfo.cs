@@ -37,5 +37,5 @@ using Smart_Studios;
 //
 //[assembly: AssemblyVersion(SmartStudios.PluginVersion)]
 //[assembly: AssemblyFileVersion(SmartStudios.PluginVersion)]
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
+[assembly: AssemblyVersion(Smart_Studios.SmartStudios.PluginVersion)]
+[assembly: AssemblyFileVersion(Smart_Studios.SmartStudios.PluginVersion)]
